@@ -116,7 +116,7 @@ public class WorkerController : MonoBehaviour
 
     private void OnDrag (GameObject go, Vector3 startPos, Vector3 endPos, GameObject ground)
     {
-        if (_currentSelectedWorker != go)
+        if (_currentSelectedWorker != go || _gameobjectToDataMap.ContainsKey (go) == false)
             return;
         if (_gameobjectToDataMap[go].CurrentJob != null)
             return;
@@ -135,21 +135,23 @@ public class WorkerController : MonoBehaviour
     {
         if (go != _currentSelectedWorker)
             return;
+        if (_gameobjectToDataMap[go].CurrentJob != null)
+            return;
+
 
         _currentSelectedWorker.transform.position = _workerLastLegalPosition;
-
-        Job job = releaseArea.GetComponent<Job> ();
-        if (job != null)
+        if (releaseArea != null)
         {
-            if (job.isBeingWorked)
-                return;
-            _gameobjectToDataMap[go].CurrentJob = job;
-            job.isBeingWorked = true;
+            Job job = releaseArea.GetComponent<Job> ();
+            if (job != null && job.isBeingWorked == false)
+            {
+                job.StartJob (_gameobjectToDataMap[go]);
+            }
+
+
         }
-
-
-
     }
+
 
     #endregion
 

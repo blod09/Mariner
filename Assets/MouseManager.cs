@@ -11,7 +11,7 @@ public class MouseManager : MonoBehaviour
     private LayerMask _groundLayerMask;
 
     [SerializeField]
-    private LayerMask _releaseAreaLayerMask;
+    private LayerMask _workerAreaMask;
 
     #endregion
 
@@ -49,13 +49,17 @@ public class MouseManager : MonoBehaviour
     private void Update ()
     {
         _currentMousePosition = GetCurrentMousePosition ();
-        _objectUnderMouse = GetObjectUnderMouse (AllLayerMask);
+        _objectUnderMouse = GetObjectUnderMouse (_workerAreaMask);
+        if (_objectUnderMouse == null)
+            _objectUnderMouse = GetObjectUnderMouse (AllLayerMask);
+        if (_objectUnderMouse == null)
+            _objectUnderMouse = this.gameObject;
 
         if (Input.GetMouseButtonUp (0))
         {
             _isDragging = false;
             if (onRelease != null)
-                onRelease (_objectBeingDragged, GetObjectUnderMouse (_releaseAreaLayerMask));
+                onRelease (_objectBeingDragged, GetObjectUnderMouse (_groundLayerMask));
 
             _objectBeingDragged = gameObject;
             _isDragging = false;
@@ -107,9 +111,9 @@ public class MouseManager : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast (ray, out hit, Mathf.Infinity, mask);
 
-        Debug.DrawRay (ray.origin, ray.direction * Mathf.Infinity, Color.yellow);
+        //Debug.DrawRay (ray.origin, ray.direction * Mathf.Infinity, Color.yellow);
 
-        return (hit.collider != null) ? hit.collider.gameObject : gameObject;
+        return (hit.collider != null) ? hit.collider.gameObject : null;
     }
 
     #endregion
