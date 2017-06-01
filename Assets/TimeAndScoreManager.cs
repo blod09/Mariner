@@ -78,7 +78,7 @@ public class TimeAndScoreManager : MonoBehaviour, IManager
                 minutes = 0;
                 hours += 1;
 
-                Gold -= workerController.TotalWorkerCost;
+                Gold -= workerController.TotalWorkerSalary;
                 if (Gold <= 0)
                 {
                     Debug.Log ("You ran out of cash, Game Over.");

@@ -4,9 +4,9 @@ using UnityEngine;
 [RequireComponent (typeof (GameStateManager))]
 public class MasterManager : MonoBehaviour
 {
-    public GameStateManager GameStateMan { get; private set; }
-    public TimeAndScoreManager TimeAndScoreMan { get; private set; }
-    private List<IManager> _managersList;
+    public static GameStateManager GameStateMan { get; private set; }
+    public static TimeAndScoreManager TimeAndScoreMan { get; private set; }
+    private static List<IManager> _managersList;
 
     private void Awake ()
     {

@@ -57,7 +57,7 @@ public class Job : MonoBehaviour
 
     private void OnEnable ()
     {
-        FindObjectOfType<MasterManager> ().TimeAndScoreMan.oneMinuteTick += OnTimeTick;
+        MasterManager.TimeAndScoreMan.oneMinuteTick += OnTimeTick;
     }
 
     private void OnDisable ()
@@ -65,7 +65,7 @@ public class Job : MonoBehaviour
         if (FindObjectOfType<MasterManager> () == null)
             return;
 
-        FindObjectOfType<MasterManager> ().TimeAndScoreMan.oneMinuteTick -= OnTimeTick;
+        MasterManager.TimeAndScoreMan.oneMinuteTick -= OnTimeTick;
     }
 
     private void OnTimeTick ()
@@ -80,7 +80,9 @@ public class Job : MonoBehaviour
         }
         if (isBeingWorked)
         {
-            jobProgress += 1.0f / jobTimeInMinutes;
+            float jobProgressToAdd = (1.0f / jobTimeInMinutes) * (1 + (assignedWorker.Level - 1) * 0.5f);
+            print (jobProgressToAdd);
+            jobProgress += jobProgressToAdd;
             progressBar.Progress = jobProgress;
         }
     }
@@ -91,16 +93,18 @@ public class Job : MonoBehaviour
 
         isBeingWorked = true;
 
-        progressBar = Instantiate (progressBarPrefab).GetComponent<ProgressBar> ();
-        progressBar.gameObject.transform.SetParent (canvas);
+        progressBar = Instantiate (progressBarPrefab, canvas, true).GetComponent<ProgressBar> ();
         progressBar.targetToFollow = gameObject.transform;
+        progressBar.SetColor (new Color (88f / 255f, 133f / 255f, 103f / 255f), Color.green);
+        progressBar.Progress = jobProgress;
     }
 
     public void FinishJob ()
     {
+        assignedWorker.AddExp (JobTimeInMinutes * 0.08f);
         assignedWorker = null;
         isBeingWorked = false;
-        FindObjectOfType<MasterManager> ().TimeAndScoreMan.Gold += jobPayout;
+        MasterManager.TimeAndScoreMan.Gold += jobPayout;
 
         Destroy (progressBar.gameObject);
         Destroy (GetComponentInChildren<Ship> ().gameObject);
