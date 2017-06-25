@@ -112,12 +112,12 @@ public class Ship : MonoBehaviour
             transform.position = spawnPosition;
         }
 
-        print (ground.tag);
+        //print (ground.tag);
         if (ground.tag == "WorkingArea" && ground.GetComponent<Job> () == null)
         {
             go.transform.position = ground.transform.position;
             location = ShipLocation.WorkArea;
-            ground.AddComponent<Job> ().progressBarPrefab = this.progressBarPrefab;
+            ground.AddComponent<Job> ();
             transform.SetParent (ground.transform);
             parentDock.isOccupied = false;
             return;

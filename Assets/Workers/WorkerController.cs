@@ -8,6 +8,12 @@ public class WorkerController : MonoBehaviour
     #region Editor Fields
 
     [SerializeField]
+    Transform[] spawnPoints;
+    [SerializeField]
+    private int _numberOfWorkersAtStart;
+    [SerializeField]
+    public int baseWorkerSalary;
+    [SerializeField]
     private GameObject _workerPrefab;
     [SerializeField]
     private Material _normalMaterial;
@@ -23,14 +29,29 @@ public class WorkerController : MonoBehaviour
 
     private Vector3 _workerLastLegalPosition;
 
-    private Dictionary<GameObject, Worker> _gameobjectToDataMap;
+    public List<Worker> WorkerList { get; private set; }
 
-    private WorkerTooltip _workerTooltip;
+    private static Dictionary<GameObject, Worker> _gameobjectToDataMap;
 
-    public int TotalWorkerSalary { get; private set; }
+    private static WorkerTooltip _workerTooltip;
+
+    public int TotalWorkerSalary
+    {
+        get
+        {
+            int salary = 0;
+            foreach (Worker worker in WorkerList)
+            {
+                salary += worker.salary;
+            }
+            return salary;
+        }
+    }
 
     private void Awake ()
+
     {
+        WorkerList = new List<Worker> ();
         _gameobjectToDataMap = new Dictionary<GameObject, Worker> ();
         _workerTooltip = FindObjectOfType (typeof (WorkerTooltip)) as WorkerTooltip;
 
@@ -40,19 +61,10 @@ public class WorkerController : MonoBehaviour
 
     private void Start ()
     {
-
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < _numberOfWorkersAtStart; i++)
         {
-            Worker worker = new Worker ("Ricardo" + (i + 1), 15);
-            TotalWorkerSalary += worker.salary;
-            GameObject go = Instantiate (_workerPrefab, new Vector3 (i * -8, 0, -30), Quaternion.identity, gameObject.transform);
-            go.name = worker.Name;
-
-            // Find the object in the hirerachy that actually holds the collider.
-            go = go.GetComponentInChildren<Collider> ().gameObject;
-            _gameobjectToDataMap.Add (go, worker);
+            HireWorker ();
         }
-
     }
 
     private void Update ()
@@ -60,9 +72,7 @@ public class WorkerController : MonoBehaviour
         if (Input.GetButtonDown ("Jump") && _currentSelectedWorker != null)
         {
             Worker w = _gameobjectToDataMap[_currentSelectedWorker];
-            w.AddExp (2f);
-            print ("Level: " + w.Level);
-            print ("Progress: " + w.levelProgressInPercent);
+            w.AddExp (20f);
         }
     }
 
@@ -96,14 +106,15 @@ public class WorkerController : MonoBehaviour
         // If we already have a worker that is being hovered over and it's not this one, then reset the material.
         if (_currentHoveredWorker != null && go != _currentHoveredWorker)
         {
-            _currentHoveredWorker.GetComponentInChildren<Renderer> ().material = _normalMaterial;
+            ChangeToNormalMaterial (_currentHoveredWorker);
+            _currentHoveredWorker = null;
         }
 
         // If the object being hovered over is one of the workers this script controlls, change it's material to _hoveredMaterial.
         if (_gameobjectToDataMap.ContainsKey (go))
         {
-            go.GetComponentInChildren<Renderer> ().material = _hoveredMaterial;
             _currentHoveredWorker = go;
+            ChangeToHoveredMaterial (_currentHoveredWorker);
         }
     }
 
@@ -129,9 +140,9 @@ public class WorkerController : MonoBehaviour
 
     private void OnDrag (GameObject go, Vector3 startPos, Vector3 endPos, GameObject ground)
     {
-        if (_currentSelectedWorker != go || _gameobjectToDataMap.ContainsKey (go) == false)
+        if (_gameobjectToDataMap.ContainsKey (go) == false)
             return;
-        if (_gameobjectToDataMap[go].CurrentJob != null)
+        if (_gameobjectToDataMap[go].CurrentJob != null || _currentSelectedWorker != go)
             return;
 
         endPos.y += 2.0f;
@@ -168,6 +179,37 @@ public class WorkerController : MonoBehaviour
 
     #endregion
 
+    public void HireWorker ()
+    {
+        if (spawnPoints.Length <= 0)
+        {
+            throw new Exception ("HireWorker() - No spawn points registered");
+        }
+
+        Vector3 spawnPoint = spawnPoints[UnityEngine.Random.Range (0, spawnPoints.Length)].position;
+        Vector2 randomFactor = UnityEngine.Random.insideUnitCircle * 2;
+        spawnPoint.x += randomFactor.x;
+        spawnPoint.z += randomFactor.y;
+
+
+        Worker worker = new Worker (NameGenerator.GetRandomPirateName (), baseWorkerSalary);
+
+        GameObject go = Instantiate (_workerPrefab, spawnPoint, Quaternion.identity, gameObject.transform);
+        go.name = worker.Name;
+
+        WorkerVisualData workerVisuals = WorkerVisuals.GetVisuals (worker.type);
+
+        go.GetComponentInChildren<Renderer> ().material = workerVisuals.normalMat;
+        go.GetComponentInChildren<MeshFilter> ().mesh = workerVisuals.mesh;
+
+
+
+        // Find the object in the hirerachy that actually holds the collider.
+        go = go.GetComponentInChildren<Collider> ().gameObject;
+        WorkerList.Add (worker);
+        _gameobjectToDataMap.Add (go, worker);
+    }
+
     #region Helper Functions
 
     private bool isWalkableGround (GameObject ground)
@@ -183,6 +225,44 @@ public class WorkerController : MonoBehaviour
 
         return true;
     }
+
+    public static void HideWorker (Worker w)
+    {
+        foreach (KeyValuePair<GameObject, Worker> worker in _gameobjectToDataMap)
+        {
+            if (worker.Value == w)
+            {
+                worker.Key.SetActive (false);
+                _workerTooltip.Hide ();
+
+            }
+        }
+    }
+    public static void ShowWorker (Worker w)
+    {
+        foreach (KeyValuePair<GameObject, Worker> worker in _gameobjectToDataMap)
+        {
+            if (worker.Value == w)
+                worker.Key.SetActive (true);
+        }
+    }
+
+    private void ChangeToNormalMaterial (GameObject workerGO)
+    {
+        Worker worker;
+        _gameobjectToDataMap.TryGetValue (workerGO, out worker);
+        WorkerVisualData workerVisualData = WorkerVisuals.GetVisuals (worker.type);
+        workerGO.GetComponentInChildren<Renderer> ().material = workerVisualData.normalMat;
+    }
+
+    private void ChangeToHoveredMaterial (GameObject workerGO)
+    {
+        Worker worker;
+        _gameobjectToDataMap.TryGetValue (workerGO, out worker);
+        WorkerVisualData workerVisualData = WorkerVisuals.GetVisuals (worker.type);
+        workerGO.GetComponentInChildren<Renderer> ().material = workerVisualData.hoveredMat;
+    }
+
 
     #endregion
 

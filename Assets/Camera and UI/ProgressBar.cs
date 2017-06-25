@@ -28,6 +28,7 @@ public class ProgressBar : MonoBehaviour
 
     void Awake ()
     {
+        transform.SetAsFirstSibling ();
         UpdateProgress ();
     }
 
@@ -40,12 +41,14 @@ public class ProgressBar : MonoBehaviour
 
     void Update ()
     {
-        if (targetToFollow == null)
-            return;
+        if (targetToFollow != null)
+        {
 
-        transform.position = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (targetToFollow.position) + offset, 0.5f);
+            Vector3 targetPos = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (targetToFollow.position) + offset, 0.5f);
+            targetPos.z = 0.0f;
+            transform.position = targetPos;
+        }
     }
-
     void UpdateProgress ()
     {
         bar.transform.localScale = new Vector3 (_progress / 1.0f, bar.transform.localScale.y, bar.transform.localScale.z);

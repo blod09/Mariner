@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class MouseManager : MonoBehaviour
 {
     #region Layer Masks
 
     private const int AllLayerMask = int.MaxValue;
+
 
     [SerializeField]
     private LayerMask _groundLayerMask;
@@ -15,6 +19,9 @@ public class MouseManager : MonoBehaviour
 
     #endregion
 
+    private GraphicRaycaster uiRaycaster;
+    private PointerEventData pointerEventData;
+    private List<RaycastResult> uiRaycastResults;
 
     private Vector3 _currentMousePosition;
     private GameObject _objectUnderMouse;
@@ -45,7 +52,13 @@ public class MouseManager : MonoBehaviour
 
     #endregion
 
+    private void Awake ()
+    {
+        uiRaycaster = GameObject.Find ("Canvas").GetComponent<GraphicRaycaster> ();
+        pointerEventData = new PointerEventData (null);
 
+
+    }
     private void Update ()
     {
         _currentMousePosition = GetCurrentMousePosition ();
@@ -54,6 +67,15 @@ public class MouseManager : MonoBehaviour
             _objectUnderMouse = GetObjectUnderMouse (AllLayerMask);
         if (_objectUnderMouse == null)
             _objectUnderMouse = this.gameObject;
+
+        if (_isDragging && onDrag != null)
+        {
+            onDrag (_objectBeingDragged, _dragStartPos, _currentMousePosition, GetObjectUnderMouse (_groundLayerMask));
+        }
+        else if (onHover != null)
+        {
+            onHover (_objectUnderMouse);
+        }
 
         if (Input.GetMouseButtonUp (0))
         {
@@ -64,6 +86,16 @@ public class MouseManager : MonoBehaviour
             _objectBeingDragged = gameObject;
             _isDragging = false;
         }
+
+        // Ignore the UI layer.
+        pointerEventData.position = Input.mousePosition;
+        uiRaycastResults = new List<RaycastResult> ();
+        uiRaycaster.Raycast (pointerEventData, uiRaycastResults);
+        if (uiRaycastResults.Count > 0)
+        {
+            return;
+        }
+
 
         if (Input.GetMouseButtonDown (0) && onClick != null)
         {
@@ -80,14 +112,6 @@ public class MouseManager : MonoBehaviour
         }
 
 
-        if (_isDragging && onDrag != null)
-        {
-            onDrag (_objectBeingDragged, _dragStartPos, _currentMousePosition, GetObjectUnderMouse (_groundLayerMask));
-        }
-        else if (onHover != null)
-        {
-            onHover (_objectUnderMouse);
-        }
     }
 
 

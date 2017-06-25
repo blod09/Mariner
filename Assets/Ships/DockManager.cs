@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ public class DockManager : MonoBehaviour
         }
 
 
-
+        SpawnShip (0);
         StartCoroutine (SpawnShips ());
     }
 
@@ -38,21 +39,37 @@ public class DockManager : MonoBehaviour
         {
             for (int i = 0; i < docks.Count; i++)
             {
-                if (docks[i].isOccupied == false && Random.Range (0.0f, 1.0f) < spawnRate)
+                if (docks[i].isOccupied == false && UnityEngine.Random.Range (0.0f, 1.0f) < spawnRate)
                 {
-                    GameObject go = Instantiate (shipPrefab, docks[i].location.position + offsetFromDock, Quaternion.identity);
-                    go.transform.eulerAngles = Vector3.up * 90f;
-                    Ship ship = go.GetComponent<Ship> ();
-                    ship.parentDock = docks[i];
-                    ship.location = ShipLocation.Dock;
-                    ship.minutesToLeaveAtStart = Random.Range (1, 4) * 60;
-                    ship.minutesToLeaveNow = ship.minutesToLeaveAtStart;
-                    docks[i].isOccupied = true;
+                    SpawnShip (i);
                     break;
                 }
             }
             yield return null;
         }
+
+    }
+
+
+    private void SpawnShip (int dockIndex)
+    {
+
+        try
+        {
+            GameObject go = Instantiate (shipPrefab, docks[dockIndex].location.position + offsetFromDock, Quaternion.identity);
+            go.transform.eulerAngles = Vector3.up * 90f;
+            Ship ship = go.GetComponent<Ship> ();
+            ship.parentDock = docks[dockIndex];
+            ship.location = ShipLocation.Dock;
+            ship.minutesToLeaveAtStart = UnityEngine.Random.Range (1, 4) * 60;
+            ship.minutesToLeaveNow = ship.minutesToLeaveAtStart;
+            docks[dockIndex].isOccupied = true;
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            Debug.LogError (e + " SpawnShip() trying to spawn on non-existent dock");
+        }
+
 
     }
 }

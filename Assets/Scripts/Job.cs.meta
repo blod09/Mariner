@@ -1,11 +1,13 @@
 fileFormatVersion: 2
 guid: d3be46055a7f35c4cb61bef35a9a6cbe
-timeCreated: 1495108575
+timeCreated: 1497107825
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - progressBarPrefab: {fileID: 1597829639807374, guid: 3b5f787d5151cd441866b0e2890babba,
+      type: 2}
+  - smokeCloudPrefab: {fileID: 1153922003465260, guid: 5d36a679bf1723e4b8b69590c9463912,
       type: 2}
   executionOrder: 0
   icon: {instanceID: 0}

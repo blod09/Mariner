@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TimeAndScoreManager : MonoBehaviour, IManager
@@ -31,6 +30,13 @@ public class TimeAndScoreManager : MonoBehaviour, IManager
                 moneyChangeAnimator.SetTrigger ("Decrease");
             }
             _gold = value;
+            if (_gold <= 0)
+            {
+                {
+                    Debug.Log ("You ran out of cash, Game Over.");
+                    //SceneManager.LoadScene (0);
+                }
+            }
         }
     }
 
@@ -79,11 +85,7 @@ public class TimeAndScoreManager : MonoBehaviour, IManager
                 hours += 1;
 
                 Gold -= workerController.TotalWorkerSalary;
-                if (Gold <= 0)
-                {
-                    Debug.Log ("You ran out of cash, Game Over.");
-                    SceneManager.LoadScene (0);
-                }
+
             }
 
             if (hours >= 24)

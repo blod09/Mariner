@@ -21,9 +21,14 @@ public class WorkerTooltip : MonoBehaviour
     private Text levelProgressText;
     [SerializeField]
     private ProgressBar expBar;
+    [SerializeField]
+    private Color expBarColor;
+    [SerializeField]
+    private Color expBarBG;
 
     private void Awake ()
     {
+        expBar.SetColor (expBarBG, expBarColor);
 
         if (panelGraphic == null || panelText == null)
             throw new Exception ("Error: Worker tooltip doesn't have a reference to the panel or the text objects.");
@@ -32,42 +37,58 @@ public class WorkerTooltip : MonoBehaviour
 
     }
 
+
     private void LateUpdate ()
     {
+
         if (target != null)
         {
-            transform.position = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (target.gameObject.transform.position) + offset, 0.5f);
+
+            Vector3 targetPos = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (target.position) + offset, 0.5f);
+            targetPos.z = 0.0f;
+            transform.position = targetPos;
         }
+
+
     }
 
     public void Show (Worker workerData, Transform targetToFollow)
     {
         this.target = targetToFollow;
         worker = workerData;
-        expBar.gameObject.SetActive (true);
         StartCoroutine (UpdateStats (statUpdateInSeconds));
-        panelGraphic.enabled = true;
-        panelText.enabled = true;
+        panelGraphic.gameObject.SetActive (true);
+
+
     }
 
     public void Hide ()
     {
         target = null;
         worker = null;
-        panelGraphic.enabled = false;
-        panelText.enabled = false;
-        expBar.gameObject.SetActive (false);
+        panelGraphic.gameObject.SetActive (false);
         StopAllCoroutines ();
     }
 
     private IEnumerator UpdateStats (float updateInterval)
     {
+        float speedBonus;
 
         while (true)
         {
-            string tooltipString = worker.Name + "\n\n";
-            tooltipString += "Level " + worker.Level + "\n\n";
-            tooltipString += "exp";
+            string tooltipString = worker.Name + "\n\n\n";
+            speedBonus = ProgressionFormulas.WorkerSpeed (worker.Level) * 100.0f - 100.0f;
+
+            if (speedBonus > 0)
+            {
+                tooltipString += "Level " + worker.Level + "\n\n";
+                tooltipString += string.Format ("<size={0}> Speed Bonus:  +{1:F0}%</size>", levelProgressText.fontSize - 2, speedBonus);
+            }
+            else
+            {
+                tooltipString += "\nLevel " + worker.Level + "\n";
+            }
+            tooltipString += "<size=" + (levelProgressText.fontSize - 2) + ">" + "\n\n\n\nEXP</size>";
             expBar.Progress = worker.levelProgressInPercent;
             panelText.text = tooltipString;
 

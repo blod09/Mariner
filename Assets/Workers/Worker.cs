@@ -3,6 +3,7 @@
 public class Worker
 {
     public string Name;
+    public WorkerType type;
 
     public Job CurrentJob { get; set; }
 
@@ -30,6 +31,7 @@ public class Worker
     public Worker (string name, int costPerHour)
     {
         Name = name;
+        type = (WorkerType)Random.Range (0, System.Enum.GetNames (typeof (WorkerType)).Length);
         CurrentJob = null;
 
         salary = costPerHour;
@@ -39,14 +41,20 @@ public class Worker
     {
         if (ammount + Exp >= _expToLevelUp)
         {
-            level += 1;
-            Exp = Exp + ammount - _expToLevelUp;
-            _expToLevelUp = _expToLevelUp + level * 10;
+            LevelUp (Exp + ammount - _expToLevelUp);
         }
         else
         {
             Exp += ammount;
         }
+    }
+
+    private void LevelUp (float overflowExp)
+    {
+        level += 1;
+        Exp = overflowExp;
+        _expToLevelUp = _expToLevelUp + level * 10;
+        salary = Mathf.RoundToInt (salary * Mathf.Log (level + 2));
     }
 
 

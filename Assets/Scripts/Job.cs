@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class Job : MonoBehaviour
 {
-    [SerializeField]
-    public GameObject progressBarPrefab;
+    private GameObject progressBarPrefab;
+    private GameObject smokeCloudPrefab;
+
+    private GameObject smokeCloudReference;
+
 
     private ProgressBar progressBar;
 
@@ -50,6 +53,10 @@ public class Job : MonoBehaviour
         if (canvas == null)
             throw new NullReferenceException (string.Format ("{0} failed to find and object name \"Canvas\"", GetType ().Name));
 
+        progressBarPrefab = Resources.Load ("ProgressBar", typeof (GameObject)) as GameObject;
+        smokeCloudPrefab = Resources.Load ("SmokeCloud", typeof (GameObject)) as GameObject;
+
+
         //TEST FUNCTION
         RandomizeJobStats ();
 
@@ -80,8 +87,8 @@ public class Job : MonoBehaviour
         }
         if (isBeingWorked)
         {
-            float jobProgressToAdd = (1.0f / jobTimeInMinutes) * (1 + (assignedWorker.Level - 1) * 0.5f);
-            print (jobProgressToAdd);
+            float jobProgressToAdd = (1.0f / jobTimeInMinutes) * ProgressionFormulas.WorkerSpeed (assignedWorker.Level);
+            //print (jobProgressToAdd);
             jobProgress += jobProgressToAdd;
             progressBar.Progress = jobProgress;
         }
@@ -90,10 +97,12 @@ public class Job : MonoBehaviour
     public void StartJob (Worker worker)
     {
         assignedWorker = worker;
-
+        WorkerController.HideWorker (worker);
         isBeingWorked = true;
 
         progressBar = Instantiate (progressBarPrefab, canvas, true).GetComponent<ProgressBar> ();
+        smokeCloudReference = Instantiate (smokeCloudPrefab, this.gameObject.transform, false);
+
         progressBar.targetToFollow = gameObject.transform;
         progressBar.SetColor (new Color (88f / 255f, 133f / 255f, 103f / 255f), Color.green);
         progressBar.Progress = jobProgress;
@@ -101,11 +110,14 @@ public class Job : MonoBehaviour
 
     public void FinishJob ()
     {
+        WorkerController.ShowWorker (assignedWorker);
+
         assignedWorker.AddExp (JobTimeInMinutes * 0.08f);
         assignedWorker = null;
         isBeingWorked = false;
         MasterManager.TimeAndScoreMan.Gold += jobPayout;
 
+        Destroy (smokeCloudReference);
         Destroy (progressBar.gameObject);
         Destroy (GetComponentInChildren<Ship> ().gameObject);
         Destroy (this);
