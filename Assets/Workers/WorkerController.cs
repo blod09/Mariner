@@ -10,10 +10,6 @@ public class WorkerController : MonoBehaviour
     [SerializeField]
     Transform[] spawnPoints;
     [SerializeField]
-    private int _numberOfWorkersAtStart;
-    [SerializeField]
-    public int baseWorkerSalary;
-    [SerializeField]
     private GameObject _workerPrefab;
     [SerializeField]
     private Material _normalMaterial;
@@ -61,12 +57,13 @@ public class WorkerController : MonoBehaviour
 
     private void Start ()
     {
-        for (int i = 0; i < _numberOfWorkersAtStart; i++)
+        for (int i = 0; i < Constants.Instance.NumberOfWorkersAtStart; i++)
         {
-            HireWorker ();
+            AddWorker ();
         }
     }
 
+#if UNITY_EDITOR
     private void Update ()
     {
         if (Input.GetButtonDown ("Jump") && _currentSelectedWorker != null)
@@ -75,6 +72,7 @@ public class WorkerController : MonoBehaviour
             w.AddExp (20f);
         }
     }
+#endif
 
     #region Action Subscription
 
@@ -181,18 +179,28 @@ public class WorkerController : MonoBehaviour
 
     public void HireWorker ()
     {
+        if (MasterManager.TimeAndScoreMan.Gold > ProgressionFormulas.CurrentWorkerCost (WorkerList.Count))
+        {
+            MasterManager.TimeAndScoreMan.Gold -= ProgressionFormulas.CurrentWorkerCost (WorkerList.Count);
+            AddWorker ();
+
+        }
+    }
+
+    public void AddWorker ()
+    {
         if (spawnPoints.Length <= 0)
         {
             throw new Exception ("HireWorker() - No spawn points registered");
         }
 
         Vector3 spawnPoint = spawnPoints[UnityEngine.Random.Range (0, spawnPoints.Length)].position;
-        Vector2 randomFactor = UnityEngine.Random.insideUnitCircle * 2;
+        Vector2 randomFactor = UnityEngine.Random.insideUnitCircle * 3.0f;
         spawnPoint.x += randomFactor.x;
         spawnPoint.z += randomFactor.y;
 
 
-        Worker worker = new Worker (NameGenerator.GetRandomPirateName (), baseWorkerSalary);
+        Worker worker = new Worker (NameGenerator.GetRandomPirateName (), Constants.Instance.WorkerBaseSalary);
 
         GameObject go = Instantiate (_workerPrefab, spawnPoint, Quaternion.identity, gameObject.transform);
         go.name = worker.Name;
@@ -263,6 +271,12 @@ public class WorkerController : MonoBehaviour
         workerGO.GetComponentInChildren<Renderer> ().material = workerVisualData.hoveredMat;
     }
 
+    public int GetCurrentNumberOfWorkers ()
+    {
+        if (WorkerList == null)
+            return 0;
+        return WorkerList.Count;
+    }
 
     #endregion
 

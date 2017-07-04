@@ -30,7 +30,7 @@ public class MouseManager : MonoBehaviour
 
     private bool _isDragging = false;
     // How much to wait after a click is registered, before we consider this a "drag" (pun intended)
-    private const float TimeBeforeDrag = 0.09f;
+    private const float TimeBeforeDrag = 0.06f;
 
     private float _draggingTimer = 0.0f;
     //Because the mouse moves independently of frame-rate, its possible to "lose" objects being dragged, that's why we cache them.

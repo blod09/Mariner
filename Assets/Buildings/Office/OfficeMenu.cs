@@ -58,7 +58,7 @@ public class OfficeMenu : MonoBehaviour
 
                 foreach (Worker worker in workerController.WorkerList)
                 {
-                    GameObject go = Instantiate (workerTilePrefab, contentWindow);
+                    GameObject go = Instantiate (workerTilePrefab, contentWindow, false);
                     WorkerTile tile = go.GetComponent<WorkerTile> ();
                     tile.SetTile (worker);
                     tiles.Add (tile);

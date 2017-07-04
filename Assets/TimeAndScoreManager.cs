@@ -7,9 +7,6 @@ public class TimeAndScoreManager : MonoBehaviour, IManager
 {
     public ManagerState ManState { get; private set; }
 
-    [SerializeField]
-    private int startingGold;
-
     private int _gold;
     private int minutes;
     private int hours;
@@ -62,7 +59,7 @@ public class TimeAndScoreManager : MonoBehaviour, IManager
 
         workerController = FindObjectOfType<WorkerController> ();
 
-        _gold = startingGold;
+        _gold = Constants.Instance.StartingGold;
 
         hours = 9;
         minutes = 0;

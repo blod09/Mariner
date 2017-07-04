@@ -4,8 +4,15 @@ using UnityEngine.UI;
 public class ProgressBar : MonoBehaviour
 {
 
-    [SerializeField]
-    private Vector3 offset = Vector3.zero;
+    public Vector3 offset
+    {
+        get
+        {
+            Vector3 o = Vector3.zero;
+            o.y = (Screen.height / 13.0f) * -1.0f;
+            return o;
+        }
+    }
     [SerializeField]
     public GameObject background;
     [SerializeField]
@@ -39,12 +46,12 @@ public class ProgressBar : MonoBehaviour
 
     }
 
-    void Update ()
+    void LateUpdate ()
     {
         if (targetToFollow != null)
         {
 
-            Vector3 targetPos = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (targetToFollow.position) + offset, 0.5f);
+            Vector3 targetPos = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (targetToFollow.position) + offset, 0.8f);
             targetPos.z = 0.0f;
             transform.position = targetPos;
         }

@@ -7,8 +7,55 @@ public enum ShipLocation
     WorkArea
 }
 
+public enum ShipTier
+{
+    Tier0,
+    Tier1,
+    Tier2,
+    Tier3,
+    Tier4
+}
+
+public struct ShipStats
+{
+    public string name;
+    public ShipTier tier;
+
+    public bool isInspected;
+
+
+    public int minutesToLeaveAtStart;
+
+    public int penaltyForLeave;
+    public int payment;
+
+    public int timeRequirement;
+    public int woodRequirement;
+    public int clothRequirement;
+    public int tarRequirement;
+
+    public ShipStats (string _name, ShipTier _tier)
+    {
+        name = _name;
+        tier = _tier;
+
+        isInspected = false;
+
+        minutesToLeaveAtStart = 200;
+        penaltyForLeave = 100;
+        payment = 500;
+
+        timeRequirement = 90;
+        woodRequirement = 5;
+        clothRequirement = 3;
+        tarRequirement = 0;
+    }
+}
+
 public class Ship : MonoBehaviour
 {
+
+
     [SerializeField]
     private GameObject progressBarPrefab;
     [SerializeField]
@@ -16,11 +63,22 @@ public class Ship : MonoBehaviour
     [SerializeField]
     private Material hoveredMaterial;
 
+    [SerializeField]
+    private Color leaveBarColor;
+    [SerializeField]
+    private Color leaveBarBG;
+
+    public ShipTooltip tooltip;
+
     private Renderer rend;
-    [HideInInspector]
-    public int minutesToLeaveNow;
-    [HideInInspector]
-    public int minutesToLeaveAtStart;
+
+    public ShipStats stats
+    {
+        get; set;
+    }
+
+    public int minutesToLeaveCurrent;
+
 
     private bool isSelected;
 
@@ -35,20 +93,28 @@ public class Ship : MonoBehaviour
 
     private void Awake ()
     {
+
         goWithCollider = GetComponentInChildren<Collider> ().gameObject;
         spawnPosition = transform.position;
         rend = GetComponentInChildren<Renderer> ();
         rend.material = normalMaterial;
-        leaveBar = Instantiate (progressBarPrefab, GameObject.Find ("Canvas").transform, true).GetComponent<ProgressBar> ();
+        leaveBar = Instantiate (progressBarPrefab, GameObject.Find ("Canvas").transform, false).GetComponent<ProgressBar> ();
         leaveBar.Progress = 1.0f;
         leaveBar.targetToFollow = this.gameObject.transform;
 
-        leaveBar.SetColor (new Color (67f / 255f, 106f / 255f, 149f / 255f), Color.blue);
+        leaveBar.SetColor (leaveBarBG, leaveBarColor);
+        minutesToLeaveCurrent = stats.minutesToLeaveAtStart;
 
+    }
+
+    private void Start ()
+    {
+        minutesToLeaveCurrent = stats.minutesToLeaveAtStart;
     }
 
     private void OnEnable ()
     {
+
         MouseManager.onHover += OnHover;
         MouseManager.onClick += OnClick;
         MouseManager.onDrag += OnDrag;
@@ -84,12 +150,15 @@ public class Ship : MonoBehaviour
         if (go == goWithCollider)
         {
             isSelected = true;
+            tooltip.Show (this, this.gameObject.transform);
         }
         else
         {
+            if (tooltip.target == this.gameObject.transform)
+                tooltip.Hide ();
+
             isSelected = false;
         }
-
 
     }
 
@@ -117,7 +186,8 @@ public class Ship : MonoBehaviour
         {
             go.transform.position = ground.transform.position;
             location = ShipLocation.WorkArea;
-            ground.AddComponent<Job> ();
+            Job j = ground.AddComponent<Job> ();
+            j.AssignJobStats (stats);
             transform.SetParent (ground.transform);
             parentDock.isOccupied = false;
             return;
@@ -136,17 +206,18 @@ public class Ship : MonoBehaviour
             return;
         }
 
-        minutesToLeaveNow--;
-        if (minutesToLeaveNow <= 0)
+        minutesToLeaveCurrent--;
+        if (minutesToLeaveCurrent <= 0)
         {
             Destroy (leaveBar.gameObject);
             parentDock.isOccupied = false;
             Destroy (gameObject);
             MasterManager.TimeAndScoreMan.Gold -= Random.Range (3, 6) * 17;
             return;
+
         }
 
-        leaveBar.Progress = (float)minutesToLeaveNow / (float)minutesToLeaveAtStart;
+        leaveBar.Progress = (float)minutesToLeaveCurrent / (float)stats.minutesToLeaveAtStart;
 
     }
 }

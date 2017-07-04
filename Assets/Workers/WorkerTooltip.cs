@@ -10,8 +10,15 @@ public class WorkerTooltip : MonoBehaviour
     private Worker worker;
     private Transform target;
 
-    [SerializeField]
-    private Vector3 offset;
+    public Vector3 offset
+    {
+        get
+        {
+            Vector3 o = Vector3.zero;
+            o.y = (Screen.height / 17.0f) * -1.0f;
+            return o;
+        }
+    }
 
     [SerializeField]
     private Image panelGraphic;
@@ -44,9 +51,12 @@ public class WorkerTooltip : MonoBehaviour
         if (target != null)
         {
 
-            Vector3 targetPos = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (target.position) + offset, 0.5f);
+            Vector3 targetPos = Vector3.Lerp (transform.position, Camera.main.WorldToScreenPoint (target.position) + offset, 0.8f);
             targetPos.z = 0.0f;
             transform.position = targetPos;
+
+
+            //transform.localPosition = Vector3.one;
         }
 
 

@@ -5,21 +5,17 @@ public class NameGenerator : MonoBehaviour
 
     private static string[] pirateNames;
 
-    void Awake ()
-    {
-        pirateNames = System.IO.File.ReadAllLines (@"Assets\Resources\piratenames.txt");
-    }
-
-    // Update is called once per frame
     public static string GetRandomPirateName ()
     {
         if (pirateNames == null)
         {
-            pirateNames = System.IO.File.ReadAllLines (@"Assets\Resources\piratenames.txt");
-
+            TextAsset t;
+            t = Resources.Load ("piratenames", typeof (TextAsset)) as TextAsset;
+            char newLine = '\n';
+            pirateNames = t.text.Split (newLine);
         }
 
-        return pirateNames[Random.Range (0, pirateNames.Length)];
+        return pirateNames[UnityEngine.Random.Range (0, pirateNames.Length)];
 
     }
 }

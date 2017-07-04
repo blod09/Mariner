@@ -11,10 +11,12 @@ public class Job : MonoBehaviour
 
     private ProgressBar progressBar;
 
-    [SerializeField]
-    private int jobTimeInMinutes = 60;
-    [SerializeField]
-    private int jobPayout = 1000;
+    private int jobTimeInMinutes;
+    private int woodNeeded;
+    private int clothNeeded;
+    private int tarNeeded;
+
+    private int jobPayout;
 
     public int JobTimeInMinutes { get { return jobTimeInMinutes; } }
     public int JobPayout { get { return jobPayout; } }
@@ -58,7 +60,8 @@ public class Job : MonoBehaviour
 
 
         //TEST FUNCTION
-        RandomizeJobStats ();
+        //RandomizeJobStats ();
+
 
     }
 
@@ -96,15 +99,15 @@ public class Job : MonoBehaviour
 
     public void StartJob (Worker worker)
     {
+
         assignedWorker = worker;
         WorkerController.HideWorker (worker);
         isBeingWorked = true;
 
-        progressBar = Instantiate (progressBarPrefab, canvas, true).GetComponent<ProgressBar> ();
+        progressBar = Instantiate (progressBarPrefab, canvas, false).GetComponent<ProgressBar> ();
         smokeCloudReference = Instantiate (smokeCloudPrefab, this.gameObject.transform, false);
 
         progressBar.targetToFollow = gameObject.transform;
-        progressBar.SetColor (new Color (88f / 255f, 133f / 255f, 103f / 255f), Color.green);
         progressBar.Progress = jobProgress;
     }
 
@@ -123,10 +126,20 @@ public class Job : MonoBehaviour
         Destroy (this);
     }
 
-    private void RandomizeJobStats ()
+    //private void RandomizeJobStats ()
+    //{
+    //    jobTimeInMinutes = UnityEngine.Random.Range (30, 120);
+    //    jobPayout = UnityEngine.Random.Range (50, 300);
+    //}
+
+    public void AssignJobStats (ShipStats stats)
     {
-        jobTimeInMinutes = UnityEngine.Random.Range (30, 120);
-        jobPayout = UnityEngine.Random.Range (10, 75);
+        jobTimeInMinutes = stats.timeRequirement;
+        jobPayout = stats.payment;
+
+        woodNeeded = stats.woodRequirement;
+        clothNeeded = stats.clothRequirement;
+        tarNeeded = stats.tarRequirement;
     }
 
 
