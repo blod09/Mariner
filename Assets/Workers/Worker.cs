@@ -5,7 +5,7 @@ public class Worker
     public string Name;
     public WorkerType type;
 
-    public Job CurrentJob { get; set; }
+    public BaseJob CurrentJob { get; set; }
 
     // Cost per in-game hour.
     public int salary;

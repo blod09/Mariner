@@ -97,6 +97,10 @@ public class MouseManager : MonoBehaviour
         }
 
 
+        // Interrup with the right mouse button
+        if (Input.GetMouseButtonDown (1) && onClick != null)
+            onClick (gameObject);
+
         if (Input.GetMouseButtonDown (0) && onClick != null)
         {
             _dragStartPos = _currentMousePosition;

@@ -26,34 +26,20 @@ public struct ShipStats
 
     public int minutesToLeaveAtStart;
 
-    public int penaltyForLeave;
     public int payment;
+    public int penaltyForLeave;
+
 
     public int timeRequirement;
     public int woodRequirement;
     public int clothRequirement;
     public int tarRequirement;
 
-    public ShipStats (string _name, ShipTier _tier)
-    {
-        name = _name;
-        tier = _tier;
-
-        isInspected = false;
-
-        minutesToLeaveAtStart = 200;
-        penaltyForLeave = 100;
-        payment = 500;
-
-        timeRequirement = 90;
-        woodRequirement = 5;
-        clothRequirement = 3;
-        tarRequirement = 0;
-    }
 }
 
 public class Ship : MonoBehaviour
 {
+    public static int currentNumberOfShips { get; private set; }
 
 
     [SerializeField]
@@ -76,6 +62,7 @@ public class Ship : MonoBehaviour
     {
         get; set;
     }
+
 
     public int minutesToLeaveCurrent;
 
@@ -120,6 +107,10 @@ public class Ship : MonoBehaviour
         MouseManager.onDrag += OnDrag;
         MouseManager.onRelease += OnRelease;
         MasterManager.TimeAndScoreMan.oneMinuteTick += OnOneMinuteTick;
+
+        currentNumberOfShips++;
+
+
     }
 
     private void OnDisable ()
@@ -130,6 +121,8 @@ public class Ship : MonoBehaviour
         MouseManager.onDrag -= OnDrag;
         MouseManager.onRelease -= OnRelease;
         MasterManager.TimeAndScoreMan.oneMinuteTick -= OnOneMinuteTick;
+
+        currentNumberOfShips--;
 
     }
 
@@ -182,12 +175,12 @@ public class Ship : MonoBehaviour
         }
 
         //print (ground.tag);
-        if (ground.tag == "WorkingArea" && ground.GetComponent<Job> () == null)
+        if (ground.tag == "WorkingArea" && ground.GetComponent<ShipJob> () == null)
         {
             go.transform.position = ground.transform.position;
             location = ShipLocation.WorkArea;
-            Job j = ground.AddComponent<Job> ();
-            j.AssignJobStats (stats);
+            ShipJob j = ground.AddComponent<ShipJob> ();
+            j.AssignShip (this);
             transform.SetParent (ground.transform);
             parentDock.isOccupied = false;
             return;
@@ -219,5 +212,10 @@ public class Ship : MonoBehaviour
 
         leaveBar.Progress = (float)minutesToLeaveCurrent / (float)stats.minutesToLeaveAtStart;
 
+    }
+
+    public void ShowTooltip ()
+    {
+        tooltip.Show (this, gameObject.transform);
     }
 }

@@ -76,7 +76,7 @@ public class ShadowBuilding : MonoBehaviour
         }
         else
         {
-            col.a = 50f / 255f;
+            col.a = 75f / 255f;
             Pulse ();
         }
         rend.material.color = col;
@@ -85,7 +85,7 @@ public class ShadowBuilding : MonoBehaviour
     void Pulse ()
     {
         float frequency = .4f;
-        float amplitude = .05f;
+        float amplitude = .1f;
         float phase = 0.0f;
 
         transform.localScale = Vector3.one + Vector3.one * amplitude * (Mathf.Sin (Mathf.PI * 2.0f * frequency * Time.time + phase));

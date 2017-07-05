@@ -164,10 +164,10 @@ public class WorkerController : MonoBehaviour
         _currentSelectedWorker.transform.position = _workerLastLegalPosition;
         if (releaseArea != null)
         {
-            Job job = releaseArea.GetComponent<Job> ();
-            if (job != null && job.isBeingWorked == false)
+            BaseJob job = releaseArea.GetComponent<BaseJob> ();
+            if (job != null)
             {
-                job.StartJob (_gameobjectToDataMap[_currentSelectedWorker]);
+                job.TryToStartJob (_gameobjectToDataMap[_currentSelectedWorker]);
             }
 
 

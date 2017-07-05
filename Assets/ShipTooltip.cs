@@ -11,9 +11,9 @@ public class ShipTooltip : MonoBehaviour
 
     // Title
     [SerializeField]
-    private Text name;
+    private Text shipName;
     [SerializeField]
-    private Text tier;
+    private Text shipTier;
 
     // Labels
     [SerializeField]
@@ -91,10 +91,14 @@ public class ShipTooltip : MonoBehaviour
         while (true)
         {
 
-            name.text = ship.stats.name;
-            tier.text = ((int)ship.stats.tier + 1).ToString ();
+            // Name and Tier
+            shipName.text = ship.stats.name;
+            shipTier.text = ((int)ship.stats.tier + 1).ToString ();
 
 
+
+
+            // Leave Timer, Should disappear once ship is in the pit
             if (ship.location == ShipLocation.Dock)
             {
                 leaveLabel.gameObject.SetActive (true);
@@ -109,18 +113,55 @@ public class ShipTooltip : MonoBehaviour
             }
 
 
-
+            // Resourves
 
             if (ship.stats.isInspected == true)
             {
                 timeValue.text = ship.stats.timeRequirement.ToString () + " Minutes";
-                paymentValue.text = ship.stats.payment.ToString () + "$";
+                paymentValue.text = ship.stats.payment.ToString () + " $";
             }
             else
             {
-                timeValue.text = ship.stats.timeRequirement.ToString () + " Minutes";
-                paymentValue.text = ship.stats.payment.ToString () + "$";
+                timeValue.text = "????";
+                paymentValue.text = "????";
             }
+
+
+            if (ship.stats.woodRequirement > 0)
+            {
+                woodLabel.gameObject.SetActive (true);
+                woodValue.text = (ship.stats.isInspected) ? string.Format ("{0}/{1}", Mathf.Clamp (MasterManager.TimeAndScoreMan.CurrentWood, 0, ship.stats.woodRequirement), ship.stats.woodRequirement) : "??/??";
+            }
+            else
+            {
+                woodLabel.gameObject.SetActive (false);
+            }
+
+
+
+            if (ship.stats.clothRequirement > 0)
+            {
+                clothLabel.gameObject.SetActive (true);
+                clothValue.text = (ship.stats.isInspected) ? string.Format ("{0}/{1}", Mathf.Clamp (MasterManager.TimeAndScoreMan.CurrentCloth, 0, ship.stats.clothRequirement), ship.stats.clothRequirement) : "??/??";
+            }
+            else
+            {
+                clothLabel.gameObject.SetActive (false);
+            }
+
+
+
+            if (ship.stats.tarRequirement > 0)
+            {
+                tarLabel.gameObject.SetActive (true);
+                tarValue.text = (ship.stats.isInspected) ? string.Format ("{0}/{1}", Mathf.Clamp (MasterManager.TimeAndScoreMan.CurrentTar, 0, ship.stats.tarRequirement), ship.stats.tarRequirement) : "??/??";
+            }
+            else
+            {
+                tarLabel.gameObject.SetActive (false);
+            }
+
+
 
 
             yield return new WaitForSeconds (updateDelay);

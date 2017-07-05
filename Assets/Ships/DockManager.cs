@@ -5,12 +5,21 @@ using UnityEngine;
 
 public class DockManager : MonoBehaviour
 {
+    public static int currentNumberOfDocks
+    {
+        get; private set;
+    }
+
+    public static int totalNumberOfFixedShips;
+
+    [SerializeField]
+    private ShipTiers shipTierData;
     [SerializeField]
     private ShipTooltip tooltipRefference;
 
 
     [SerializeField]
-    private GameObject shipPrefab;
+    private GameObject[] shipPrefabs;
     [SerializeField]
     private GameObject shadowDock;
     [SerializeField]
@@ -21,10 +30,7 @@ public class DockManager : MonoBehaviour
 
     private float spawnTimer;
 
-    public static int currentNumberOfDocks
-    {
-        get; private set;
-    }
+
 
     private void Start ()
     {
@@ -76,11 +82,23 @@ public class DockManager : MonoBehaviour
 
         try
         {
-            GameObject go = Instantiate (shipPrefab, docks[dockIndex].gameObjectTransform.position + offsetFromDock, Quaternion.identity);
+            ShipTier tier = ProgressionFormulas.GetRandomShipTier ();
+            GameObject go;
+
+            try
+            {
+                go = Instantiate (shipPrefabs[(int)tier], docks[dockIndex].gameObjectTransform.position + offsetFromDock, Quaternion.identity);
+
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                go = Instantiate (shipPrefabs[0], docks[dockIndex].gameObjectTransform.position + offsetFromDock, Quaternion.identity);
+            }
+
 
             go.transform.eulerAngles = Vector3.up * 90f;
             Ship ship = go.GetComponent<Ship> ();
-            ship.stats = new ShipStats ("Red Bear", ShipTier.Tier2);
+            ship.stats = shipTierData.GetRandomStatsByTier (tier);
             ship.tooltip = tooltipRefference;
             ship.parentDock = docks[dockIndex];
             ship.location = ShipLocation.Dock;
