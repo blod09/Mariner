@@ -29,12 +29,15 @@ public class ResourceBuilding : BaseJob
     public int ResourceGenerationLevel { get { return resourceGenerationLevel; } }
     public int ResourceCapacityLevel { get { return resourceCapacityLevel; } }
 
+    // Audio
+    private AudioSource audioSource;
 
 
     protected override void Awake ()
     {
         base.Awake ();
         scoreManager = MasterManager.TimeAndScoreMan;
+        audioSource = GetComponent<AudioSource> ();
     }
 
     protected override void OnEnable ()
@@ -152,6 +155,8 @@ public class ResourceBuilding : BaseJob
         smokeCloud = Instantiate (smokeCloudPrefab, this.gameObject.transform, false);
 
         jobProgress = 0.0f;
+        audioSource.Stop ();
+        audioSource.Play ();
         progressBar.targetToFollow = gameObject.transform;
         progressBar.Progress = jobProgress;
     }
@@ -177,6 +182,7 @@ public class ResourceBuilding : BaseJob
                 break;
         }
 
+        audioSource.Stop ();
         Destroy (smokeCloud);
         Destroy (progressBar.gameObject);
         assignedWorker = null;

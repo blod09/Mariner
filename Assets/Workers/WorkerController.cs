@@ -16,6 +16,21 @@ public class WorkerController : MonoBehaviour
     [SerializeField]
     private Material _hoveredMaterial;
 
+
+    // Audio
+    [SerializeField]
+    private AudioSource audioSource1;
+    [SerializeField]
+    private AudioSource audioSource2;
+
+    [SerializeField]
+    private AudioClip dragAndDrop;
+    private bool dragStarted;
+    [SerializeField]
+    private AudioClip[] pirateVoices;
+
+
+
     #endregion
 
 
@@ -133,6 +148,13 @@ public class WorkerController : MonoBehaviour
             _currentSelectedWorker = go;
             _workerTooltip.Show (_gameobjectToDataMap[go], go.transform);
             _workerLastLegalPosition = go.transform.position;
+
+            if (UnityEngine.Random.Range (0, 3) == 0)
+            {
+                audioSource1.Stop ();
+                audioSource1.clip = pirateVoices[UnityEngine.Random.Range (0, pirateVoices.Length)];
+                audioSource1.Play ();
+            }
         }
     }
 
@@ -147,6 +169,11 @@ public class WorkerController : MonoBehaviour
 
         // TODO: If user is trying to place worker in illegal position, give feedback!
         _currentSelectedWorker.transform.position = endPos;
+        if (dragStarted == false)
+        {
+
+            dragStarted = true;
+        }
         if (isWalkableGround (ground))
         {
             _workerLastLegalPosition = endPos;
@@ -162,6 +189,8 @@ public class WorkerController : MonoBehaviour
 
 
         _currentSelectedWorker.transform.position = _workerLastLegalPosition;
+
+        dragStarted = false;
         if (releaseArea != null)
         {
             BaseJob job = releaseArea.GetComponent<BaseJob> ();

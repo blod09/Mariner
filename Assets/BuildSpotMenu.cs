@@ -29,7 +29,7 @@ public class BuildSpotMenu : MonoBehaviour
     [SerializeField]
     private GameObject refineryPrefab;
 
-    private void Awake ()
+    private void Start ()
     {
         Hide ();
     }

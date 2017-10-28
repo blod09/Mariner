@@ -54,7 +54,7 @@ public class Worker
         level += 1;
         Exp = overflowExp;
         _expToLevelUp = _expToLevelUp + level * 10;
-        salary = Mathf.RoundToInt (salary * Mathf.Log (level + 2));
+        salary = ProgressionFormulas.WorkerSalary (level);
     }
 
 

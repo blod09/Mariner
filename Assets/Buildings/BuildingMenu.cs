@@ -24,17 +24,16 @@ public class BuildingMenu : MonoBehaviour
 
     ResourceBuilding building;
 
-    private void Awake ()
+    private void Start ()
     {
         Hide ();
     }
 
     private void OnEnable ()
     {
-        StartCoroutine (UpdateContent ());
 
-        productionButton.onClick.AddListener (building.LevelUpBuildingGeneration);
-        capacityButton.onClick.AddListener (building.LevelUpBuildingCapacity);
+        productionButton.onClick.AddListener (OnProductionClick);
+        capacityButton.onClick.AddListener (OnCapacityClick);
 
     }
 
@@ -48,8 +47,10 @@ public class BuildingMenu : MonoBehaviour
 
     public void Show (ResourceBuilding _building)
     {
+
         building = _building;
         gameObject.SetActive (true);
+
         transform.position = Camera.main.WorldToScreenPoint (building.gameObject.transform.position);
     }
 
@@ -60,6 +61,8 @@ public class BuildingMenu : MonoBehaviour
 
     private IEnumerator UpdateContent ()
     {
+
+
         while (true)
         {
             switch (building.BuildingType)
@@ -88,6 +91,8 @@ public class BuildingMenu : MonoBehaviour
             else
             {
                 productionText.text += "\nLevel: " + building.ResourceGenerationLevel;
+                productionButton.gameObject.SetActive (true);
+
             }
 
             capacityText.text = string.Format ("Storage: {0}", ProgressionFormulas.ResourcesCapacityByLevel (building.ResourceCapacityLevel));
@@ -100,6 +105,8 @@ public class BuildingMenu : MonoBehaviour
             else
             {
                 capacityText.text += "\nLevel: " + building.ResourceCapacityLevel;
+                capacityButton.gameObject.SetActive (true);
+
             }
 
             productionButtonText.text = "Upgrade\n" + ProgressionFormulas.BuildingUpgradeCost (building.ResourceGenerationLevel) + "$";
@@ -119,5 +126,16 @@ public class BuildingMenu : MonoBehaviour
             yield return new WaitForSeconds (0.1f);
         }
     }
+
+    private void OnProductionClick ()
+    {
+        building.LevelUpBuildingGeneration ();
+    }
+
+    private void OnCapacityClick ()
+    {
+        building.LevelUpBuildingCapacity ();
+    }
+
 
 }

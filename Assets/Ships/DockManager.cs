@@ -36,6 +36,7 @@ public class DockManager : MonoBehaviour
     {
         InitializeDocks ();
 
+
         SpawnShip (0);
         StartCoroutine (SpawnShips ());
     }
@@ -156,6 +157,7 @@ public class DockManager : MonoBehaviour
 
     private void InitializeDocks ()
     {
+        currentNumberOfDocks = 0;
         docks = new List<Dock> ();
         dockGameObjects = new List<GameObject> ();
 

@@ -26,6 +26,7 @@ public class WorkingAreaManager : MonoBehaviour
 
     private void InitializePits ()
     {
+        pitCount = 0;
         pitList = new List<GameObject> ();
 
         foreach (Transform t in transform)

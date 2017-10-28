@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ShipJob : BaseJob
 {
@@ -6,8 +7,19 @@ public class ShipJob : BaseJob
 
     private GameObject spyGlassIconPrefab;
     private GameObject sawIconPrefab;
+    private GameObject crossedSawIconPrefab;
+
+    private AudioClip soundEffect;
+    private AudioSource audioSource;
+
+
+    private GameObject spyGlassIcon;
+    private GameObject sawIcon;
+    private GameObject crossedSawIcon;
+
 
     private GameObject currentIcon;
+
     private Vector3 iconOffset;
 
     private Ship shipToWorkOn;
@@ -24,11 +36,34 @@ public class ShipJob : BaseJob
 
         // Load Extra Prefabs.
         inspectionBarPrefab = Resources.Load ("InspectionBar", typeof (GameObject)) as GameObject;
+
         spyGlassIconPrefab = Resources.Load ("SpyGlassIcon", typeof (GameObject)) as GameObject;
         sawIconPrefab = Resources.Load ("SawIcon", typeof (GameObject)) as GameObject;
+        crossedSawIconPrefab = Resources.Load ("CrossedSawIcon", typeof (GameObject)) as GameObject;
+
+        soundEffect = Resources.Load ("Hammer", typeof (AudioClip)) as AudioClip;
+
+        audioSource = GetComponent<AudioSource> ();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource> ();
+            audioSource.clip = soundEffect;
+            audioSource.loop = true;
+            audioSource.Stop ();
+        }
 
         // TODO: remove hardcoding the offset.
         iconOffset = new Vector3 (0.0f, 10.0f, 0.0f);
+
+        spyGlassIcon = CreateIcon (spyGlassIconPrefab);
+        sawIcon = CreateIcon (sawIconPrefab);
+        crossedSawIcon = CreateIcon (crossedSawIconPrefab);
+
+        currentIcon = spyGlassIcon;
+        sawIcon.SetActive (false);
+        crossedSawIcon.SetActive (false);
+
+
     }
 
     protected override void OnTimeTick ()
@@ -63,6 +98,14 @@ public class ShipJob : BaseJob
         }
     }
 
+
+    public void AssignShip (Ship ship)
+    {
+        shipToWorkOn = ship;
+        StartCoroutine (UpdateIcon ());
+
+    }
+
     public override void TryToStartJob (Worker worker)
     {
         base.TryToStartJob (worker);
@@ -91,7 +134,6 @@ public class ShipJob : BaseJob
         progressBar.targetToFollow = gameObject.transform;
         progressBar.Progress = inspectionProgress;
 
-        Destroy (currentIcon);
 
     }
 
@@ -110,9 +152,6 @@ public class ShipJob : BaseJob
 
         Destroy (progressBar.gameObject);
 
-        currentIcon = Instantiate (sawIconPrefab, transform, false);
-        currentIcon.transform.localScale = Vector3.one * 2.4f;
-        currentIcon.transform.position += iconOffset;
 
     }
 
@@ -134,7 +173,8 @@ public class ShipJob : BaseJob
         progressBar.targetToFollow = gameObject.transform;
         progressBar.Progress = jobProgress;
 
-        Destroy (currentIcon);
+        audioSource.Play ();
+
     }
 
 
@@ -152,6 +192,14 @@ public class ShipJob : BaseJob
         Destroy (smokeCloud);
         Destroy (progressBar.gameObject);
         Destroy (GetComponentInChildren<Ship> ().gameObject);
+
+        StopAllCoroutines ();
+        currentIcon = null;
+        Destroy (spyGlassIcon);
+        Destroy (sawIcon);
+        Destroy (crossedSawIcon);
+        audioSource.Stop ();
+
         assignedWorker = null;
         isBeingWorked = false;
         Destroy (this);
@@ -163,12 +211,58 @@ public class ShipJob : BaseJob
     //    jobPayout = UnityEngine.Random.Range (50, 300);
     //}
 
-    public void AssignShip (Ship ship)
-    {
-        shipToWorkOn = ship;
 
-        currentIcon = Instantiate (spyGlassIconPrefab, transform, false);
-        currentIcon.transform.position += iconOffset;
-        currentIcon.transform.localScale = Vector3.one * 2.4f;
+    private GameObject CreateIcon (GameObject iconPrefab)
+    {
+        GameObject go = Instantiate (iconPrefab, transform, false);
+        go.transform.position += iconOffset;
+        go.transform.localScale = Vector3.one * 2.4f;
+        return go;
+    }
+
+    private IEnumerator UpdateIcon ()
+    {
+        while (true)
+        {
+            if (currentIcon != null && (isBeingInspected || isBeingWorked))
+            {
+                currentIcon.SetActive (false);
+                currentIcon = null;
+            }
+            else if (shipToWorkOn.stats.isInspected == false && currentIcon != spyGlassIcon && !(isBeingInspected || isBeingWorked))
+            {
+                if (currentIcon != null)
+                    currentIcon.SetActive (false);
+
+                currentIcon = spyGlassIcon;
+                currentIcon.SetActive (true);
+            }
+            else if (MasterManager.TimeAndScoreMan.IsEnoughResources (
+              shipToWorkOn.stats.woodRequirement,
+              shipToWorkOn.stats.clothRequirement,
+              shipToWorkOn.stats.tarRequirement
+              ) && currentIcon != sawIcon && shipToWorkOn.stats.isInspected == true && !(isBeingInspected || isBeingWorked))
+            {
+                if (currentIcon != null)
+                    currentIcon.SetActive (false);
+
+                currentIcon = sawIcon;
+                currentIcon.SetActive (true);
+            }
+            else if (currentIcon != crossedSawIcon && !MasterManager.TimeAndScoreMan.IsEnoughResources (
+              shipToWorkOn.stats.woodRequirement,
+              shipToWorkOn.stats.clothRequirement,
+              shipToWorkOn.stats.tarRequirement
+              ) && shipToWorkOn.stats.isInspected == true && !(isBeingInspected || isBeingWorked))
+            {
+                if (currentIcon != null)
+                    currentIcon.SetActive (false);
+
+                currentIcon = crossedSawIcon;
+                currentIcon.SetActive (true);
+            }
+
+            yield return new WaitForSeconds (0.1f);
+        }
     }
 }

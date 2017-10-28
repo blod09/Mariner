@@ -12,6 +12,11 @@ public class ProgressionFormulas : MonoBehaviour
         return (Mathf.Pow (1.337f, workerLevel - 1));
     }
 
+    public static int WorkerSalary (int workerLevel)
+    {
+        return (int)((workerLevel * Constants.Instance.WorkerBaseSalary) * 1.2f);
+    }
+
     public static float GetShipSpawnRate ()
     {
         float spawnRate = Constants.Instance.ShipSpawnRate * ((float)DockManager.currentNumberOfDocks / ((float)(Ship.currentNumberOfShips + 1) * 2.0f));
@@ -21,12 +26,12 @@ public class ProgressionFormulas : MonoBehaviour
 
     public static int CurerntDockCost ()
     {
-        return (int)Mathf.Pow ((DockManager.currentNumberOfDocks * 7.7f), 3) / 2;
+        return (int)(Mathf.Pow ((DockManager.currentNumberOfDocks * 7.7f), 3) / 1.5f);
     }
 
     public static int CurrentPitCost ()
     {
-        return (int)Mathf.Pow ((WorkingAreaManager.pitCount * 45.856f), 2) / 2;
+        return (int)Mathf.Pow ((WorkingAreaManager.pitCount * 45.856f), 2) / 3;
     }
 
     public static int CurrentWorkerCost (int currentNumberOfWorkers)
@@ -75,13 +80,13 @@ public class ProgressionFormulas : MonoBehaviour
 
     private static ShipTier HighestUnlockedShipTier ()
     {
-        if ((DockManager.currentNumberOfDocks > 4 && DockManager.totalNumberOfFixedShips >= 80) || DockManager.totalNumberOfFixedShips >= 160)
+        if ((DockManager.currentNumberOfDocks > 4 && DockManager.totalNumberOfFixedShips >= 60) || DockManager.totalNumberOfFixedShips >= 100)
             return ShipTier.Tier4;
-        if ((DockManager.currentNumberOfDocks > 3 && DockManager.totalNumberOfFixedShips >= 40) || DockManager.totalNumberOfFixedShips >= 80)
+        if ((DockManager.currentNumberOfDocks > 3 && DockManager.totalNumberOfFixedShips >= 40) || DockManager.totalNumberOfFixedShips >= 60)
             return ShipTier.Tier3;
-        if ((DockManager.currentNumberOfDocks > 2 && DockManager.totalNumberOfFixedShips >= 15) || DockManager.totalNumberOfFixedShips >= 40)
+        if ((DockManager.currentNumberOfDocks > 2 && DockManager.totalNumberOfFixedShips >= 15) || DockManager.totalNumberOfFixedShips >= 30)
             return ShipTier.Tier2;
-        if ((DockManager.currentNumberOfDocks > 0 && DockManager.totalNumberOfFixedShips >= 3) || DockManager.totalNumberOfFixedShips >= 10)
+        if ((DockManager.currentNumberOfDocks > 1 && DockManager.totalNumberOfFixedShips >= 3) || DockManager.totalNumberOfFixedShips >= 10)
             return ShipTier.Tier1;
 
         return ShipTier.Tier0;
@@ -96,8 +101,7 @@ public class ProgressionFormulas : MonoBehaviour
     {
         float lerpFactor = (1.0f / ((float)Constants.Instance.BuildingMaxLevel)) * ((float)level);
 
-        print (lerpFactor);
-        return (int)Mathf.Pow (Constants.Instance.ResourceCapacityAtLevelOne, Mathf.Lerp (0.75f, 3.0f, lerpFactor));
+        return (int)Mathf.Pow (Constants.Instance.ResourceCapacityAtLevelOne, Mathf.Lerp (0.70f, 3.0f, lerpFactor));
     }
 
     public static int BuildingBuildCost (ResourceType type)

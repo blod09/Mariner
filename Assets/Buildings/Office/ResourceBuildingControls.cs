@@ -25,7 +25,7 @@ public class ResourceBuildingControls : Building
             // TODO
             // TODO
             // TODO !!!
-            menu = _temp[1];
+            menu = _temp[_temp.Length - 1];
             buildingMenuRefference = menu.gameObject;
         }
 
@@ -54,10 +54,12 @@ public class ResourceBuildingControls : Building
 
         if (clickedGameObject == colliderRefference.gameObject)
         {
+
             menu.Show (rb);
         }
         else if (clickedGameObject != menu.gameObject && allResourceBuildings.Contains (clickedGameObject) == false)
         {
+
             menu.Hide ();
         }
     }
