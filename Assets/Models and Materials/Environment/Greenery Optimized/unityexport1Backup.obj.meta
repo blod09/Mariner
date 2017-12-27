@@ -1,0 +1,249 @@
+fileFormatVersion: 2
+guid: 9bd7f3cb3f8f8e44eb5af88f10196823
+timeCreated: 1499246195
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Bush
+    100002: Bush2
+    100004: Bush_MeshPart0
+    100006: Bush_MeshPart1
+    100008: Bush_MeshPart2
+    100010: Bush_MeshPart3
+    100012: Bush_MeshPart4
+    100014: Bush_MeshPart5
+    100016: Bush_MeshPart6
+    100018: Tree__1
+    100020: Tree__1_MeshPart0
+    100022: Tree__1_MeshPart1
+    100024: Tree__2
+    100026: Tree__2_MeshPart0
+    100028: Tree__2_MeshPart1
+    100030: Tree__2_MeshPart10
+    100032: Tree__2_MeshPart11
+    100034: Tree__2_MeshPart12
+    100036: Tree__2_MeshPart13
+    100038: Tree__2_MeshPart14
+    100040: Tree__2_MeshPart15
+    100042: Tree__2_MeshPart16
+    100044: Tree__2_MeshPart17
+    100046: Tree__2_MeshPart2
+    100048: Tree__2_MeshPart3
+    100050: Tree__2_MeshPart4
+    100052: Tree__2_MeshPart5
+    100054: Tree__2_MeshPart6
+    100056: Tree__2_MeshPart7
+    100058: Tree__2_MeshPart8
+    100060: Tree__2_MeshPart9
+    100062: //RootNode
+    400000: Bush
+    400002: Bush2
+    400004: Bush_MeshPart0
+    400006: Bush_MeshPart1
+    400008: Bush_MeshPart2
+    400010: Bush_MeshPart3
+    400012: Bush_MeshPart4
+    400014: Bush_MeshPart5
+    400016: Bush_MeshPart6
+    400018: Tree__1
+    400020: Tree__1_MeshPart0
+    400022: Tree__1_MeshPart1
+    400024: Tree__2
+    400026: Tree__2_MeshPart0
+    400028: Tree__2_MeshPart1
+    400030: Tree__2_MeshPart10
+    400032: Tree__2_MeshPart11
+    400034: Tree__2_MeshPart12
+    400036: Tree__2_MeshPart13
+    400038: Tree__2_MeshPart14
+    400040: Tree__2_MeshPart15
+    400042: Tree__2_MeshPart16
+    400044: Tree__2_MeshPart17
+    400046: Tree__2_MeshPart2
+    400048: Tree__2_MeshPart3
+    400050: Tree__2_MeshPart4
+    400052: Tree__2_MeshPart5
+    400054: Tree__2_MeshPart6
+    400056: Tree__2_MeshPart7
+    400058: Tree__2_MeshPart8
+    400060: Tree__2_MeshPart9
+    400062: //RootNode
+    2300000: Bush2
+    2300002: Bush_MeshPart0
+    2300004: Bush_MeshPart1
+    2300006: Bush_MeshPart2
+    2300008: Bush_MeshPart3
+    2300010: Bush_MeshPart4
+    2300012: Bush_MeshPart5
+    2300014: Bush_MeshPart6
+    2300016: Tree__1_MeshPart0
+    2300018: Tree__1_MeshPart1
+    2300020: Tree__2_MeshPart0
+    2300022: Tree__2_MeshPart1
+    2300024: Tree__2_MeshPart10
+    2300026: Tree__2_MeshPart11
+    2300028: Tree__2_MeshPart12
+    2300030: Tree__2_MeshPart13
+    2300032: Tree__2_MeshPart14
+    2300034: Tree__2_MeshPart15
+    2300036: Tree__2_MeshPart16
+    2300038: Tree__2_MeshPart17
+    2300040: Tree__2_MeshPart2
+    2300042: Tree__2_MeshPart3
+    2300044: Tree__2_MeshPart4
+    2300046: Tree__2_MeshPart5
+    2300048: Tree__2_MeshPart6
+    2300050: Tree__2_MeshPart7
+    2300052: Tree__2_MeshPart8
+    2300054: Tree__2_MeshPart9
+    3300000: Bush2
+    3300002: Bush_MeshPart0
+    3300004: Bush_MeshPart1
+    3300006: Bush_MeshPart2
+    3300008: Bush_MeshPart3
+    3300010: Bush_MeshPart4
+    3300012: Bush_MeshPart5
+    3300014: Bush_MeshPart6
+    3300016: Tree__1_MeshPart0
+    3300018: Tree__1_MeshPart1
+    3300020: Tree__2_MeshPart0
+    3300022: Tree__2_MeshPart1
+    3300024: Tree__2_MeshPart10
+    3300026: Tree__2_MeshPart11
+    3300028: Tree__2_MeshPart12
+    3300030: Tree__2_MeshPart13
+    3300032: Tree__2_MeshPart14
+    3300034: Tree__2_MeshPart15
+    3300036: Tree__2_MeshPart16
+    3300038: Tree__2_MeshPart17
+    3300040: Tree__2_MeshPart2
+    3300042: Tree__2_MeshPart3
+    3300044: Tree__2_MeshPart4
+    3300046: Tree__2_MeshPart5
+    3300048: Tree__2_MeshPart6
+    3300050: Tree__2_MeshPart7
+    3300052: Tree__2_MeshPart8
+    3300054: Tree__2_MeshPart9
+    4300000: Bush_MeshPart0
+    4300002: Bush_MeshPart1
+    4300004: Bush_MeshPart2
+    4300006: Bush_MeshPart3
+    4300008: Bush_MeshPart4
+    4300010: Bush_MeshPart5
+    4300012: Bush_MeshPart6
+    4300014: Bush2
+    4300016: Tree__1_MeshPart0
+    4300018: Tree__1_MeshPart1
+    4300020: Tree__2_MeshPart0
+    4300022: Tree__2_MeshPart1
+    4300024: Tree__2_MeshPart2
+    4300026: Tree__2_MeshPart3
+    4300028: Tree__2_MeshPart4
+    4300030: Tree__2_MeshPart5
+    4300032: Tree__2_MeshPart6
+    4300034: Tree__2_MeshPart7
+    4300036: Tree__2_MeshPart8
+    4300038: Tree__2_MeshPart9
+    4300040: Tree__2_MeshPart10
+    4300042: Tree__2_MeshPart11
+    4300044: Tree__2_MeshPart12
+    4300046: Tree__2_MeshPart13
+    4300048: Tree__2_MeshPart14
+    4300050: Tree__2_MeshPart15
+    4300052: Tree__2_MeshPart16
+    4300054: Tree__2_MeshPart17
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bush1
+    second: {fileID: 2100000, guid: 4443cb123539e71478d5bf6b3ff7ab4e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bush2
+    second: {fileID: 2100000, guid: 19ad2ba68bc334447915c571e1ddd9c6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tree2
+    second: {fileID: 2100000, guid: 6ba40afcf57474f468ec0803f50bd246, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
